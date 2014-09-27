@@ -15,6 +15,7 @@ void Camera::reset(){
 	Vector3d y = z.cross(x);
 	y.normalize();
 	delete m;
+	
 	m = new Matrix4d(x[0], x[1], x[2], -x.dot(center),
 					y[0], y[1], y[2], -y.dot(center),
 					z[0], z[1], z[2], -z.dot(center),
@@ -47,4 +48,21 @@ double * Camera::getMatrix(){
 }
 void Camera::print(){
 
+}
+
+void Camera::moveUp(){
+	center.add(Vector3d(0, 1, 0));
+	reset();
+}
+void Camera::moveDown(){
+	center.add(Vector3d(0, -1, 0));
+	reset();
+}
+void Camera::moveLeft(){
+	center.add(Vector3d(1, 0, 0));
+	reset();
+}
+void Camera::moveRight(){
+	center.add(Vector3d(-1, 0, 0));
+	reset();
 }

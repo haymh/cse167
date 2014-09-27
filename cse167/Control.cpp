@@ -16,7 +16,7 @@
 using namespace std;
 
 static Control control; // control box for translation, scaling, rotation
-static Camera cam1(Vector3d(-15,5,10), Vector3d(-5, 0, 0), Vector3d(0, 1, 0.5));
+static Camera cam1(Vector3d(0,-20,10), Vector3d(0, 0, 0), Vector3d(0, -1, 0));
 //soccer ball model
 static TrunIco soccer;
 //house model
@@ -273,6 +273,18 @@ void Window::processSpecialKeys(int k, int x, int y){
 		break;
 	case GLUT_KEY_F12:
 		key = F12;
+		break;
+	case GLUT_KEY_LEFT:
+		cam1.moveLeft();
+		break;
+	case GLUT_KEY_RIGHT:
+		cam1.moveRight();
+		break;
+	case GLUT_KEY_UP:
+		cam1.moveUp();
+		break;
+	case GLUT_KEY_DOWN:
+		cam1.moveDown();
 		break;
 	}
 }

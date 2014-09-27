@@ -23,6 +23,10 @@ public:
 	Vector3d getUp();
 	double * getMatrix();
 	void print();
+	void moveUp();
+	void moveDown();
+	void moveLeft();
+	void moveRight();
 
 };
 
