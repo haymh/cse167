@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include <math.h>
 
 Camera::Camera(Vector3d e, Vector3d d, Vector3d u){
 	center = e;
@@ -65,4 +66,30 @@ void Camera::moveLeft(){
 void Camera::moveRight(){
 	center.add(Vector3d(-1, 0, 0));
 	reset();
+}
+
+// Pitch should be in the range of [-90 ... 90] degrees and yaw
+// should be in the range of [0 ... 360] degrees.
+Matrix4d Camera::FPSViewRH(Vector3d eye, GLfloat pitch, GLfloat yaw){
+	// If the pitch and yaw angles are in degrees,
+	// they need to be converted to radians. Here
+	// I assume the values are already converted to radians.
+	float cosPitch = cos(pitch);
+	float sinPitch = sin(pitch);
+	float cosYaw = cos(yaw);
+	float sinYaw = sin(yaw);
+
+	Vector3d xaxis = { cosYaw, 0, -sinYaw };
+	Vector3d yaxis = { sinYaw * sinPitch, cosPitch, cosYaw * sinPitch };
+	Vector3d zaxis = { sinYaw * cosPitch, -sinPitch, cosPitch * cosYaw };
+
+	// Create a 4x4 view matrix from the right, up, forward and eye position vectors
+	Matrix4d viewMatrix(
+		xaxis[0], xaxis[1], xaxis[2], -xaxis.dot(eye),
+		yaxis[0], yaxis[1], yaxis[2], -yaxis.dot(eye),
+		zaxis[0], zaxis[1], zaxis[2], -zaxis.dot(eye),
+		0, 0, 0, 1
+		);
+
+	return viewMatrix;
 }

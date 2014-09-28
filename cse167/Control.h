@@ -50,8 +50,7 @@ class Window	  // output window related routines
     static void displayCallback(void);
 	static void processNormalKeys(unsigned char key, int x, int y);
 	static void processSpecialKeys(int k, int x, int y);
-	static void testLoad();
-	static void testDraw();
+	static void drawObj();
 };
 
 #endif

@@ -27,6 +27,7 @@ public:
 	void moveDown();
 	void moveLeft();
 	void moveRight();
+	Matrix4d FPSViewRH(Vector3d, GLfloat, GLfloat);
 
 };
 

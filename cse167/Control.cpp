@@ -11,6 +11,7 @@
 #include "House.h"
 #include "TrunIco.h"
 #include "Camera.h"
+#include "objreader.h"
 
 
 using namespace std;
@@ -29,6 +30,24 @@ bool Window::toggle = false;
 
 enum KEY{ F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12};
 KEY key = F1;
+
+
+// camera setting
+GLfloat pitch = 0;
+GLfloat yaw = 180;
+Vector3d eye(0, 0, 10);
+
+// for loading obj model
+GLfloat *vert_array;
+GLfloat * norm_array;
+GLfloat *tex_array;
+int *indi_array;
+int vert;
+int indi;
+
+static ObjReader objReader;
+double obj_color[10] = { 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 };
+
 
 //----------------------------------------------------------------------------
 // Callback method called when system is idle.
@@ -62,6 +81,9 @@ void Window::displayCallback(void)
   case F1:
 	  drawCube();
 	  break;
+  case F2:
+	  drawObj();
+	  break;
   case F7:
 	  drawSoccer();
 	  break;
@@ -78,7 +100,7 @@ void Window::displayCallback(void)
 void Window::drawHouse(){
 	glDisable(GL_LIGHTING);
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixd(cam1.getMatrix());
+	glLoadMatrixd(cam1.FPSViewRH(eye, pitch, yaw).getPointer());
 	glBegin(GL_TRIANGLES);
 	for (int i = 0; i < 60; i++){
 		int index = house.indices[i] * 3;
@@ -90,6 +112,7 @@ void Window::drawHouse(){
 }
 
 void Window::drawCube(){
+	glEnable(GL_LIGHTING);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixd(control.getMatrix().getPointer());
 	control.spinCube();
@@ -143,6 +166,7 @@ void Window::drawCube(){
 }
 
 void Window::drawSoccer(){
+	glEnable(GL_LIGHTING);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixd(control.getMatrix().getPointer());
 	control.spinCube();
@@ -241,6 +265,8 @@ void Window::processSpecialKeys(int k, int x, int y){
 		key = F1;
 		break;
 	case GLUT_KEY_F2:
+		if (key != F2)
+			objReader.readObj("sphere.obj", vert, &vert_array, &norm_array, &tex_array, indi, &indi_array);
 		key = F2;
 		break;
 	case GLUT_KEY_F3:
@@ -275,26 +301,33 @@ void Window::processSpecialKeys(int k, int x, int y){
 		key = F12;
 		break;
 	case GLUT_KEY_LEFT:
-		cam1.moveLeft();
+		yaw += 0.1;
 		break;
 	case GLUT_KEY_RIGHT:
-		cam1.moveRight();
+		yaw -= 0.1;
 		break;
 	case GLUT_KEY_UP:
-		cam1.moveUp();
+		eye.substract(Vector3d(0,0,1));
 		break;
 	case GLUT_KEY_DOWN:
-		cam1.moveDown();
+		eye.add(Vector3d(0, 0, 1));
 		break;
 	}
 }
 
-void Window::testLoad(){
-
-}
-
-void Window::testDraw(){
+void Window::drawObj(){
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixd(control.getMatrix().getPointer());
+	control.spinCube();
+	//glLoadMatrixd(cam1.FPSViewRH(eye, pitch, yaw).getPointer());
+	glBegin(GL_TRIANGLES);
 	
+	for (int i = 0; i < indi; i++){
+		glColor3f(obj_color[i % 10], obj_color[i % 10], obj_color[i % 10]);
+		int index = indi_array[i] * 3;
+		glVertex3f(vert_array[index], vert_array[index + 1], vert_array[index + 2]);
+	}
+	glEnd();
 }
 
 Control::Control()

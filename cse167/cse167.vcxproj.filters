@@ -28,6 +28,9 @@
     <ClCompile Include="Vector4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="objreader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -49,6 +52,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Matrix4d.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="objreader.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
