@@ -84,6 +84,18 @@ void Window::displayCallback(void)
   case F2:
 	  drawObj();
 	  break;
+  case F3:
+	  drawObj();
+	  break;
+  case F4:
+	  drawObj();
+	  break;
+  case F5:
+	  drawObj();
+	  break;
+  case F6:
+	  drawObj();
+	  break;
   case F7:
 	  drawSoccer();
 	  break;
@@ -270,15 +282,23 @@ void Window::processSpecialKeys(int k, int x, int y){
 		key = F2;
 		break;
 	case GLUT_KEY_F3:
+		if (key != F3)
+			objReader.readObj("teddy.obj", vert, &vert_array, &norm_array, &tex_array, indi, &indi_array);
 		key = F3;
 		break;
 	case GLUT_KEY_F4:
+		if (key != F4)
+			objReader.readObj("teapot.obj", vert, &vert_array, &norm_array, &tex_array, indi, &indi_array);
 		key = F4;
 		break;
 	case GLUT_KEY_F5:
+		if (key != F5)
+			objReader.readObj("cow.obj", vert, &vert_array, &norm_array, &tex_array, indi, &indi_array);
 		key = F5;
 		break;
 	case GLUT_KEY_F6:
+		if (key != F6)
+			objReader.readObj("bunny.obj", vert, &vert_array, &norm_array, &tex_array, indi, &indi_array);
 		key = F6;
 		break;
 	case GLUT_KEY_F7:
@@ -323,7 +343,7 @@ void Window::drawObj(){
 	glBegin(GL_TRIANGLES);
 	
 	for (int i = 0; i < indi; i++){
-		glColor3f(obj_color[i % 10], obj_color[i % 10], obj_color[i % 10]);
+		glColor3f(obj_color[i % 10], obj_color[(i + 2) % 10], obj_color[(i + 6) % 10]);
 		int index = indi_array[i] * 3;
 		glVertex3f(vert_array[index], vert_array[index + 1], vert_array[index + 2]);
 	}
