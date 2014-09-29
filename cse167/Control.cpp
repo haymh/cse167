@@ -12,6 +12,7 @@
 #include "TrunIco.h"
 #include "Camera.h"
 #include "objreader.h"
+#include "Util.h"
 
 
 using namespace std;
@@ -48,6 +49,10 @@ int indi;
 static ObjReader objReader;
 double obj_color[10] = { 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 };
 
+//data for height map
+int map_width;
+int map_height;
+unsigned char* map = NULL;
 
 //----------------------------------------------------------------------------
 // Callback method called when system is idle.
@@ -98,6 +103,9 @@ void Window::displayCallback(void)
 	  break;
   case F7:
 	  drawSoccer();
+	  break;
+  case F8:
+	  drawHeightMap();
 	  break;
   case F9:
 	  drawHouse();
@@ -305,8 +313,12 @@ void Window::processSpecialKeys(int k, int x, int y){
 		key = F7;
 		break;
 	case GLUT_KEY_F8:
+		if (map == NULL){
+			map = Util::loadPGM("mountain.ascii.pgm", map_width, map_height);
+			std::cout << map_width << " X " << map_height << std::endl;
+		}
+			
 		key = F8;
-		std::cout << "wtf";
 		break;
 	case GLUT_KEY_F9:
 		key = F9;
@@ -347,6 +359,24 @@ void Window::drawObj(){
 		int index = indi_array[i] * 3;
 		glVertex3f(vert_array[index], vert_array[index + 1], vert_array[index + 2]);
 	}
+	glEnd();
+}
+
+void Window::drawHeightMap(){
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixd(cam1.FPSViewRH(eye, pitch, yaw).getPointer());
+	glBegin(GL_LINE_LOOP);
+	double * color = control.getColor();
+	glColor3f(color[0], color[1], color[2]);
+	int half_width = map_width / 2;
+	int half_height = map_height / 2;
+	for (int i = 0; i < map_height - 1; i++)
+		for (int j = 0; j < map_width - 1; j++){
+			glVertex3i(j - half_width, half_height - i, map[i * map_width + j]);
+			glVertex3i(j - half_width + 1, half_height - i, map[i * map_width + j + 1]);
+			glVertex3i(j - half_width, half_height - i - 1, map[(i + 1) * map_width + j]);
+			glVertex3i(j - half_width + 1, half_height - i - 1, map[(i + 1) * map_width + j + 1]);
+		}
 	glEnd();
 }
 

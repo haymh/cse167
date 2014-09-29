@@ -51,6 +51,7 @@ class Window	  // output window related routines
 	static void processNormalKeys(unsigned char key, int x, int y);
 	static void processSpecialKeys(int k, int x, int y);
 	static void drawObj();
+	static void drawHeightMap();
 };
 
 #endif
