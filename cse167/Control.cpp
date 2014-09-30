@@ -5,7 +5,7 @@
 
 
 #include <GL/glew.h>
-#include <GL/glut.h>
+#include <GL/freeglut.h>
 #include "Control.h"
 #include "Matrix4d.h"
 #include "House.h"
@@ -13,12 +13,12 @@
 #include "Camera.h"
 #include "objreader.h"
 #include "Util.h"
-
+#define PI 3.14159265
 
 using namespace std;
 
 static Control control; // control box for translation, scaling, rotation
-static Camera cam1(Vector3d(0,-20,10), Vector3d(0, 0, 0), Vector3d(0, -1, 0));
+static Camera cam1(Vector3d(0,0,0), 0, PI);
 //soccer ball model
 static TrunIco soccer;
 //house model
@@ -27,6 +27,9 @@ static House house;
 int Window::width  = 512;   // set window width in pixels here
 int Window::height = 512;   // set window height in pixels here
 bool Window::toggle = false;
+int Window::old_x = 0;
+int Window::old_y = 0;
+int Window::valid = 0;
 
 
 enum KEY{ F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12};
@@ -120,7 +123,7 @@ void Window::displayCallback(void)
 void Window::drawHouse(){
 	glDisable(GL_LIGHTING);
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixd(cam1.FPSViewRH(eye, pitch, yaw).getPointer());
+	glLoadMatrixd(cam1.getMatrix());
 	glBegin(GL_TRIANGLES);
 	for (int i = 0; i < 60; i++){
 		int index = house.indices[i] * 3;
@@ -238,10 +241,10 @@ void Window::processNormalKeys(unsigned char key, int x, int y){
 			control.move(UP);					//press 'Y'
 			break;
 		case 122:							//press 'z'
-			control.move(IN);
+			control.move(INWARD);
 			break;
 		case 90:							//press 'Z'
-			control.move(OUT);
+			control.move(OUTWARD);
 			break;
 		case 114:							//press 'r'
 			control.reset();
@@ -314,7 +317,7 @@ void Window::processSpecialKeys(int k, int x, int y){
 		break;
 	case GLUT_KEY_F8:
 		if (map == NULL){
-			map = Util::loadPGM("mountain.ascii.pgm", map_width, map_height);
+			map = Util::loadPGM("roi_14.ascii.pgm", map_width, map_height);
 			std::cout << map_width << " X " << map_height << std::endl;
 		}
 			
@@ -339,18 +342,50 @@ void Window::processSpecialKeys(int k, int x, int y){
 		yaw -= 0.1;
 		break;
 	case GLUT_KEY_UP:
-		eye.substract(Vector3d(0,0,1));
+		cam1.zoomIn();
 		break;
 	case GLUT_KEY_DOWN:
-		eye.add(Vector3d(0, 0, 1));
+		cam1.zoomOut();
 		break;
 	}
 }
 
+void Window::mouse_func(int button, int state, int x, int y) {
+	old_x = x;
+	old_y = y;
+	valid = state == GLUT_DOWN;
+}
+
+void Window::mouse_wheel(int button, int dir, int x, int y){
+	if (dir > 0)
+	{
+		cam1.zoomIn();
+	}
+	else
+	{
+		cam1.zoomOut();
+	}
+
+	return;
+}
+
+void Window::motion_func(int x, int y) {
+	if (valid) {
+		int dx = old_x - x;
+		int dy = old_y - y;
+		/* do something with dx and dy */
+		std::cout << "( " << old_x << ", " << old_y << " ), [ " << dx << ", " << dy << " ]" << std::endl;
+		cam1.moveHorizontally(dx);
+		cam1.moveVertically(-dy);
+	}
+	old_x = x;
+	old_y = y;
+}
+
 void Window::drawObj(){
+	glDisable(GL_LIGHTING);
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixd(control.getMatrix().getPointer());
-	control.spinCube();
+	glLoadMatrixd(cam1.getMatrix());
 	//glLoadMatrixd(cam1.FPSViewRH(eye, pitch, yaw).getPointer());
 	glBegin(GL_TRIANGLES);
 	
@@ -363,9 +398,10 @@ void Window::drawObj(){
 }
 
 void Window::drawHeightMap(){
+	glDisable(GL_LIGHTING);
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixd(cam1.FPSViewRH(eye, pitch, yaw).getPointer());
-	glBegin(GL_LINE_LOOP);
+	glLoadMatrixd(cam1.getMatrix());
+	glBegin(GL_POINTS);
 	double * color = control.getColor();
 	glColor3f(color[0], color[1], color[2]);
 	int half_width = map_width / 2;
@@ -415,10 +451,10 @@ void Control::move(DIRECTION d){
 	case DOWN:
 		m.translate(0.0, -0.5, 0.0);
 		break;
-	case IN:
+	case INWARD:
 		m.translate(0.0, 0.0, -0.5);
 		break;
-	case OUT:
+	case OUTWARD:
 		m.translate(0.0, 0.0, 0.5);
 		break;
 	default:
@@ -428,7 +464,7 @@ void Control::move(DIRECTION d){
 }
 
 void Control::reset(){
-	delta = 0.01;
+	delta = 0.0001;
 	spin.identity();
 	matrix.identity();
 	rotation.identity();
@@ -539,6 +575,9 @@ int main(int argc, char *argv[])
   glutIdleFunc(Window::idleCallback);
   glutKeyboardFunc(Window::processNormalKeys);
   glutSpecialFunc(Window::processSpecialKeys);
+  glutMotionFunc(Window::motion_func);
+  glutMouseFunc(Window::mouse_func);
+  glutMouseWheelFunc(Window::mouse_wheel);
     
   // Initialize cube matrix:
   control.reset();

@@ -66,7 +66,6 @@ void Matrix4d::identity()
 }
 
 void Matrix4d::rotateX(GLdouble angle){
-	angle = angle * PI / 180;
 	m[0][0] = 1;
 	m[0][1] = 0;
 	m[0][2] = 0;
@@ -88,7 +87,6 @@ void Matrix4d::rotateX(GLdouble angle){
 // angle in radians
 void Matrix4d::rotateY(GLdouble angle)
 {
-	angle = angle * PI / 180;
 	m[0][0] = cos(angle);
 	m[0][1] = 0;
 	m[0][2] = -sin(angle);
@@ -108,7 +106,6 @@ void Matrix4d::rotateY(GLdouble angle)
 }
 
 void Matrix4d::rotateZ(GLdouble angle){
-	angle = angle * PI / 180;
 	m[0][0] = cos(angle);
 	m[0][1] = sin(angle);
 	m[0][2] = 0;
@@ -128,7 +125,6 @@ void Matrix4d::rotateZ(GLdouble angle){
 }
 
 void Matrix4d::rotateArbitrary(Vector3d a, GLdouble angle){
-	angle = angle * PI / 180;
 	a.normalize();
 	GLdouble s = sin(angle);
 	GLdouble c = cos(angle);

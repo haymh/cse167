@@ -3,7 +3,7 @@
 
 #include "Matrix4d.h"
 
-enum DIRECTION { LEFT, RIGHT, UP, DOWN, IN, OUT, CLOCKWISE, COUNTER_CLOCKWISE };
+enum DIRECTION { LEFT, RIGHT, UP, DOWN, INWARD, OUTWARD, CLOCKWISE, COUNTER_CLOCKWISE };
 enum AXIS { X_AXIS, Y_AXIS, Z_AXIS };
 enum SCALE { SCALE_UP, SCALE_DOWN };
 enum COLOR { RED, GREEN, BLUE, YELLOW };
@@ -41,6 +41,9 @@ class Window	  // output window related routines
     static int width, height; 	            // window size
 	static bool toggle;
 	static bool isHouseLoaded;				//indicates if the house is loaded or not
+	static int old_x;
+	static int old_y;
+	static int valid;
 	
 	static void drawHouse();
 	static void drawCube();
@@ -52,6 +55,9 @@ class Window	  // output window related routines
 	static void processSpecialKeys(int k, int x, int y);
 	static void drawObj();
 	static void drawHeightMap();
+	static void mouse_func(int, int, int, int);
+	static void mouse_wheel(int, int, int, int);
+	static void motion_func(int, int);
 };
 
 #endif
