@@ -320,7 +320,7 @@ void Window::processSpecialKeys(int k, int x, int y){
 		break;
 	case GLUT_KEY_F8:
 		if (map == NULL){
-			map = Util::loadPGM("roi_14.ascii.pgm", map_width, map_height);
+			map = Util::loadPGM("apollonian_gasket.ascii.pgm", map_width, map_height);
 			std::cout << map_width << " X " << map_height << std::endl;
 		}
 			
@@ -345,12 +345,8 @@ void Window::processSpecialKeys(int k, int x, int y){
 		yaw -= 0.1;
 		break;
 	case GLUT_KEY_UP:
-		translation.translate(0, 1, 0);
-		cam1.translate(translation);
 		break;
 	case GLUT_KEY_DOWN:
-		translation.translate(0, -1, 0);
-		cam1.translate(translation);
 		break;
 	}
 }
@@ -406,17 +402,18 @@ void Window::drawHeightMap(){
 	glDisable(GL_LIGHTING);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixd(cam1.getMatrix());
-	glBegin(GL_POINTS);
+	glBegin(GL_QUADS);
 	double * color = control.getColor();
 	glColor3f(color[0], color[1], color[2]);
 	int half_width = map_width / 2;
 	int half_height = map_height / 2;
 	for (int i = 0; i < map_height - 1; i++)
 		for (int j = 0; j < map_width - 1; j++){
-			glVertex3i(j - half_width, half_height - i, map[i * map_width + j]);
-			glVertex3i(j - half_width + 1, half_height - i, map[i * map_width + j + 1]);
-			glVertex3i(j - half_width, half_height - i - 1, map[(i + 1) * map_width + j]);
-			glVertex3i(j - half_width + 1, half_height - i - 1, map[(i + 1) * map_width + j + 1]);
+			glVertex3i(j - half_width, 255-map[i * map_width + j], half_height - i);
+			glVertex3i(j - half_width + 1, 255-map[i * map_width + j + 1], half_height - i);
+			glVertex3i(j - half_width, 255-map[(i + 1) * map_width + j], half_height - i - 1);
+			glVertex3i(j - half_width + 1, 255-map[(i + 1) * map_width + j + 1], half_height - i - 1);
+		//glVertex3i(j - half_width, 255 - map[i * map_width + j], half_height - i);
 		}
 	glEnd();
 }

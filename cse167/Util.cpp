@@ -16,7 +16,7 @@ unsigned char* Util::loadPGM(char* filename, int & width, int & height){
 	{
 		std::cout << "A";
 		return NULL;
-		
+
 	}
 
 	// Read magic number:
