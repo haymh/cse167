@@ -16,6 +16,7 @@ class Matrix4d
 	GLdouble get(int row, int col);
 	Matrix4d & multiply(Matrix4d & another);
 	Vector4d multiply(Vector4d & another);
+	Vector3d multiply(Vector3d & another);
     void identity();  // create identity matrix
 	void rotateX(GLdouble degree); // rotaion about x axis
 	void rotateY(GLdouble degree); // rotation about y axis

@@ -57,6 +57,9 @@ int map_width;
 int map_height;
 unsigned char* map = NULL;
 
+//matrix for moving camera
+Matrix4d translation;
+
 //----------------------------------------------------------------------------
 // Callback method called when system is idle.
 void Window::idleCallback(void)
@@ -342,10 +345,12 @@ void Window::processSpecialKeys(int k, int x, int y){
 		yaw -= 0.1;
 		break;
 	case GLUT_KEY_UP:
-		cam1.zoomIn();
+		translation.translate(0, 1, 0);
+		cam1.translate(translation);
 		break;
 	case GLUT_KEY_DOWN:
-		cam1.zoomOut();
+		translation.translate(0, -1, 0);
+		cam1.translate(translation);
 		break;
 	}
 }

@@ -8,6 +8,7 @@ Camera::Camera(Vector3d e, Vector3d d, Vector3d u){
 	center = e;
 	lookat = d;
 	up = u;
+	FPSMode = false;
 	resetLookat();
 }
 
@@ -15,6 +16,7 @@ Camera::Camera(Vector3d e, GLfloat p, GLfloat y){
 	eye = e;
 	pitch = p;
 	yaw = y;
+	FPSMode = true;
 	resetFPS();
 }
 
@@ -116,6 +118,7 @@ void Camera::zoomOut(){
 	s.nonUnifScale(0.9, 0.9, 0.9);
 	m->multiply(s);
 }
+
 
 
 // Pitch should be in the range of [-90 ... 90] degrees and yaw

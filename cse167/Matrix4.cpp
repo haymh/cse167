@@ -239,3 +239,10 @@ Vector4d Matrix4d::multiply(Vector4d & another){
 	return v;
 }
 
+Vector3d Matrix4d::multiply(Vector3d & another){
+	Vector4d v(another[0], another[1], another[2], 1);
+	v = multiply(v);
+	Vector3d r(v[0], v[1], v[2]);
+	return r;
+}
+

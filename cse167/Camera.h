@@ -17,6 +17,7 @@ protected:
 	Vector3d eye;
 	GLfloat pitch;
 	GLfloat yaw;
+	bool FPSMode;
 
 public:
 	Camera(Vector3d, Vector3d, Vector3d);        // Look At Camera constructor
