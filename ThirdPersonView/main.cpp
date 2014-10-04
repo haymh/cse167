@@ -15,6 +15,7 @@ float positionx[10];
 
 bool fullScreen = false;
 
+
 void cubepositions(void) { //set the positions of the cubes
 
 	for (int i = 0; i<10; i++)
